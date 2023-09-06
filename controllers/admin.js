@@ -1,4 +1,3 @@
-
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -14,12 +13,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description
-  })
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description
+    })
     .then(result => {
       // console.log(result);
       console.log('Created Product');
@@ -36,8 +36,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findByPk(prodId) // Use findByPk instead of findById
-    .then(product => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findById(prodId)
+    .then(products => {
+      const product = products[0];
       if (!product) {
         return res.redirect('/');
       }
@@ -57,11 +60,8 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  Product.findByPk(prodId) // Use findByPk instead of findById
+  Product.findById(prodId)
     .then(product => {
-      if (!product) {
-        return res.redirect('/');
-      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
@@ -76,7 +76,8 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then(products => {
       res.render('admin/products', {
         prods: products,
@@ -89,11 +90,8 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByPk(prodId) // Use findByPk instead of findById
+  Product.findById(prodId)
     .then(product => {
-      if (!product) {
-        return res.redirect('/admin/products');
-      }
       return product.destroy();
     })
     .then(result => {
