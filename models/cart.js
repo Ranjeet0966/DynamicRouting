@@ -38,8 +38,6 @@ module.exports = class Cart {
       fs.writeFile(p, JSON.stringify(cart), err => {
         console.log(err);
       });
-    });
-  }
 
   static deleteProduct(id, productPrice) {
     fs.readFile(p, (err, fileContent) => {
@@ -58,11 +56,6 @@ module.exports = class Cart {
       updatedCart.totalPrice =
         updatedCart.totalPrice - productPrice * productQty;
 
-      fs.writeFile(p, JSON.stringify(updatedCart), err => {
-        console.log(err);
-      });
-    });
-  }
 
   static getCart(cb) {
     fs.readFile(p, (err, fileContent) => {
