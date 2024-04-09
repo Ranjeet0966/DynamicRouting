@@ -16,10 +16,10 @@ router.get('/products/:productId', shopController.getProduct);
 
 
 
-// router.get('/cart', shopController.getCart);
+router.get('/cart', shopController.getCart);
 
 // //for delete cart item
-// router.post('/cart-delete-item', shopController.postCartDeleteProduct);
+router.post('/cart-delete-item', shopController.postCartDeleteProduct);
 
 router.post('/cart', shopController.postCart);
 
